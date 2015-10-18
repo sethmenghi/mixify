@@ -1,0 +1,3 @@
+[run]
+include = mixify_django/*
+omit = *migrations*
