@@ -44,7 +44,7 @@ THIRD_PARTY_APPS = (
 # Apps specific for this project go here.
 LOCAL_APPS = (
     'mixify_django.users',  # custom users app
-    'mixify_django.playlist',
+    'mixify_django.playlists',
     # Your stuff: custom apps go here
 )
 

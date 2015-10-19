@@ -6,7 +6,7 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 
 from braces.views import LoginRequiredMixin
 
-from .models import User
+from ..users.models import User
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):

@@ -6,8 +6,22 @@ from django.views.generic import DetailView, ListView, RedirectView, UpdateView
 
 from braces.views import LoginRequiredMixin
 
-from .models import Playlist
-from ..users.models import User
+# from .models import Playlist
+from ..users.models import User, Playlist, Song
+
+
+class PlaylistDetailView(LoginRequiredMixin, DetailView):
+    model = Playlist
+    # These next two lines tell the view to index lookups by username
+    slug_field = "playlistname"
+    slug_url_kwarg = "playlistname"
+
+
+class PlaylistRedirectView(LoginRequiredMixin, RedirectView):
+    permanent = False
+
+    def get_redirect_url(self):
+        return reverse("playlists:list")
 
 
 class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
@@ -15,7 +29,7 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
     # These next two lines tell the view to index lookups by username
 
     def get_success_url(self):
-        return reverse("playlist:detail",
+        return reverse("playlists:detail",
                        kwargs={"playlistname": self.request.playlist.name})
 
     def get_owner(self):
@@ -28,6 +42,18 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
 
 class PlaylistListView(LoginRequiredMixin, ListView):
     model = Playlist
+
     # These next two lines tell the view to index lookups by username
     slug_field = "playlistname"
     slug_url_kwarg = "playlistname"
+
+
+class PlaylistLoadView(LoginRequiredMixin, RedirectView):
+    permanent = False
+
+    def get_redirect_url(self):
+        return reverse("playlists:list")
+
+    def get_context_data(self, **kwargs):
+        context = super(PlaylistLoadView, self).get_context_data(**kwargs)
+        context['spotify_token'] = self.request.user.get_spotipy_token()

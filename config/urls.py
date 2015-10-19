@@ -18,7 +18,7 @@ urlpatterns = [
     # User management
     url(r'^users/', include("mixify_django.users.urls", namespace="users")),
     url(r'^accounts/', include('allauth.urls')),
-    url(r'^playlist/', include('mixify_django.playlist.urls', namespace='playlist')),
+    url(r'^playlists/', include('mixify_django.playlists.urls', namespace='playlists')),
 
     # Your stuff: custom urls includes go here
 

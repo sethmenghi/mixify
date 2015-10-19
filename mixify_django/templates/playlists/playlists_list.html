@@ -9,7 +9,7 @@
     <h2>Playlists</h2>
 
     <div class="list-group">
-        {% for user in user_list %}
+        {% for playlist in playlists_list %}
           <a href="{% url 'playlists:detail' playlist.name %}" class="list-group-item">
             <h4 class="list-group-item-heading">{{ playlist.name }}</h4>
           </a>
