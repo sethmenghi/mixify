@@ -36,7 +36,7 @@ urlpatterns = [
 
     url(
         regex=r'^~load/$',
-        view=views.PlaylistLoadView.as_view(),
+        view=views.load_playlists,
         name='load'
     ),
 ]

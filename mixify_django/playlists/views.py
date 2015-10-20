@@ -3,11 +3,13 @@ from __future__ import absolute_import, unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
+from django.http import HttpResponseRedirect
 
 from braces.views import LoginRequiredMixin
 
 # from .models import Playlist
-from ..users.models import User, Playlist, Song
+from ..users.models import User
+from .models import Playlist, Song
 
 
 class PlaylistDetailView(LoginRequiredMixin, DetailView):
@@ -54,6 +56,7 @@ class PlaylistLoadView(LoginRequiredMixin, RedirectView):
     def get_redirect_url(self):
         return reverse("playlists:list")
 
-    def get_context_data(self, **kwargs):
-        context = super(PlaylistLoadView, self).get_context_data(**kwargs)
-        context['spotify_token'] = self.request.user.get_spotipy_token()
+
+def load_playlists(request):
+    request.user.load_playlists()
+    return reverse("users:list")
