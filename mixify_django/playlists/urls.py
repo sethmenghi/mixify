@@ -22,7 +22,7 @@ urlpatterns = [
 
     # URL pattern for the UserDetailView
     url(
-        regex=r'^(?P<playlistname>[\w.@+-]+)/$',
+        regex=r'^(?P<slug>[-\w\d]+)/$',
         view=views.PlaylistDetailView.as_view(),
         name='detail'
     ),

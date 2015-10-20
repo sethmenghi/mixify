@@ -18,7 +18,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('playlist_id', models.CharField(max_length=255, verbose_name='PlaylistID')),
                 ('name', models.CharField(max_length=255, verbose_name='Name of Playlist', blank=True)),
-                ('owner', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('slug', models.SlugField(unique=True, max_length=100, verbose_name='Slug')),
+                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
@@ -30,6 +31,7 @@ class Migration(migrations.Migration):
                 ('artist', models.CharField(max_length=255, verbose_name='Name of Artist', blank=True)),
                 ('album', models.CharField(max_length=255, verbose_name='Name of Album', blank=True)),
                 ('position', models.IntegerField(verbose_name='Track Position', blank=True)),
+                ('slug', models.SlugField(unique=True, max_length=100, verbose_name='Slug')),
                 ('playlists', models.ManyToManyField(to='playlists.Playlist')),
             ],
         ),
