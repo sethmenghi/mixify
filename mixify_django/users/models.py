@@ -77,10 +77,13 @@ class User(AbstractUser):
                 self.load_playlist(playlist, spotify=spotify)
 
     def load_playlist(self, playlist, spotify=None):
-        if not spotify:
-            spotify = self.spotify_object
-        playlist_id = playlist['id']
-        name = playlist['name']
-        playlist = Playlist(playlist_id=playlist_id, name=name, owner=self)
-        playlist.save()
-        playlist.load_songs(spotify=spotify)
+        print(playlist['owner'])
+        owner_id = playlist['owner']['id']
+        if owner_id == self.spotify_uid:
+            if not spotify:
+                spotify = self.spotify_object
+            playlist_id = playlist['id']
+            name = playlist['name']
+            playlist = Playlist(playlist_id=playlist_id, name=name, owner=self)
+            playlist.save()
+            playlist.load_songs(spotify=spotify)

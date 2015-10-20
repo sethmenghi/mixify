@@ -31,15 +31,17 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
     # These next two lines tell the view to index lookups by username
 
     def get_success_url(self):
+
         return reverse("playlists:detail",
-                       kwargs={"playlistname": self.request.playlist.name})
+                       kwargs={"playlistname": self.request.playlist})
 
     def get_owner(self):
         # Only get the User record for the user making the request
         return User.objects.get(username=self.request.user.username)
 
     def get_object(self):
-        return Playlist.objects.get(playlistname=self.request.playlist.name)
+        return Playlist.objects.get(playlistname=self.request.playlist.name,
+                                    owner=self.get_owner)
 
 
 class PlaylistListView(LoginRequiredMixin, ListView):
@@ -48,13 +50,6 @@ class PlaylistListView(LoginRequiredMixin, ListView):
     # These next two lines tell the view to index lookups by username
     slug_field = "playlistname"
     slug_url_kwarg = "playlistname"
-
-
-class PlaylistLoadView(LoginRequiredMixin, RedirectView):
-    permanent = False
-
-    def get_redirect_url(self):
-        return reverse("playlists:list")
 
 
 def load_playlists(request):

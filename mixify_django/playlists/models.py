@@ -26,7 +26,7 @@ class Playlist(models.Model):
         return self.owner.spotify_token
 
     def get_absolute_url(self):
-        return reverse('playlist:detail', kwargs={'playlistname': self.name})
+        return reverse('playlist:detail', kwargs={'playlistname': self.playlist_id})
 
     def get_playlists(self, request, token=None, spotify=None):
         if not spotify:
@@ -34,11 +34,13 @@ class Playlist(models.Model):
         playlists = spotify.user_playlists(self.owner.spotify_uid)
         return playlists
 
-    def get_songs(self, spotify=None):
+    def get_songs(self, username=None, spotify=None):
         """Yield all tracks in playlist."""
         if not spotify:
             spotify = self.spotify_object
-        results = spotify.user_playlist(self.owner.spotify_uid,
+        if not username:
+            username = self.owner.spotify_uid
+        results = spotify.user_playlist(username,
                                         self.playlist_id,
                                         fields='tracks,next')
         tracks = results['tracks']
@@ -46,16 +48,18 @@ class Playlist(models.Model):
             track = item['track']
             yield i, track
 
-    def load_songs(self, spotify=None):
+    def load_songs(self, username=None, spotify=None):
         if not spotify:
             spotify = self.spotify_object
         for i, song in self.get_songs(spotify=spotify):
             artist = song['artists'][0]['name']
-            song = Song(song_id=song['id'], name=song['name'], artist=artist,
-                        album=song['album'], position=i)
-            song.save()
-            song.playlists.add(self)
-            song.save()
+            print(i, song['id'], song['name'], artist, song['album'])
+            if song['id']:
+                song = Song(song_id=song['id'], name=song['name'], artist=artist,
+                            album=song['album']['name'], position=i)
+                song.save()
+                song.playlists.add(self)
+                song.save()
 
     def add_song(self, song, spotify=None, position=None):
         """Add a song to the playlist."""

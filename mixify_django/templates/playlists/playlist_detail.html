@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Playlist: {{ object.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <div class="row">
+    <div class="col-sm-12">
+
+      <h2>{{ playlist.name }}</h2>
+      <!-- {% if playlist.name %} -->
+        <p>{{ object.playlist_id }}</p>
+      <!--       {% endif %} -->
+    </div>
+  </div>
+
+{% if object.owner == request.user %}
+<!-- Action buttons -->
+<div class="row">
+    {% load account %}
+  <div class="col-sm-12 "> 
+    <a class="btn btn-primary" href="{% url 'playlists:update' %}">My Info</a>
+<!--     <a class="btn btn-primary" href="{% url 'playlists:load' %}">Load playlists</a> -->
+    <!-- Your Stuff: Custom user template urls -->
+  </div>
+
+</div>
+<!-- End Action buttons -->
+{% endif %}
+
+
+</div>
+{% endblock content %}
+

@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 from __future__ import absolute_import, unicode_literals
 
 import environ
+import os
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
 APPS_DIR = ROOT_DIR.path('mixify_django')
@@ -39,6 +40,8 @@ THIRD_PARTY_APPS = (
     'allauth',  # registration
     'allauth.account',  # registration
     'allauth.socialaccount',  # registration
+    'allauth.socialaccount.providers.spotify',
+
 )
 
 # Apps specific for this project go here.
@@ -222,6 +225,13 @@ LOGIN_URL = 'account_login'
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
 
+# SPOTIFY CONFIGURATION
+# ------------------------------------------------------------------------------
+# Secret key and id
+SOCIAL_AUTH_SPOTIFY_KEY = os.getenv('SPOTIPY_CLIENT_ID')
+SOCIAL_AUTH_SPOTIFY_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
+SOCIAL_AUTH_SPOTIFY_REDIRECT_URI = os.getenv('SPOTIPY_REDIRECT_URI')
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 
 # LOGGING CONFIGURATION
 # ------------------------------------------------------------------------------
