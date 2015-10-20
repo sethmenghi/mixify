@@ -3,30 +3,71 @@
 
 {% block title %}Playlist: {{ object.name }}{% endblock %}
 
+{% block css %}
+  <link href="{% static 'css/playlist_detail.css' %}" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
 <div class="container">
 
   <div class="row">
-    <div class="col-sm-12">
+    <div class="col-md-4">
 
       <h2>{{ playlist.name }}</h2>
+      <hr>
       <!-- {% if playlist.name %} -->
-        <p>{{ object.playlist_id }}</p>
+        <p>id: {{ object.playlist_id }}</p>
+        <p>owner: {{ object.owner.spotify_uid }}</p>
+        <p>slug: {{ object.slug }}</p>
       <!--       {% endif %} -->
+      {% load account %}
+    <a class="btn btn-primary" href="{% url 'playlists:update' %}">Update</a>
     </div>
   </div>
 
-{% if object.owner == request.user %}
+  {% if object.owner == request.user %}
 <!-- Action buttons -->
 <div class="row">
-    {% load account %}
-  <div class="col-sm-12 "> 
-    <a class="btn btn-primary" href="{% url 'playlists:update' %}">My Info</a>
+    <div class="col-md-12">
+      <div class="panel panel-default">
+       <div class="panel-heading">Songs</div>
+<!--         <div class="panel-body">
+          <p>...</p>
+        </div> -->
+        <table class="table">
+        <thead>
+          <tr>
+            <td>Position</td>
+            <td>Name</td>
+            <td>Artist</td>
+            <td>Album</td>
+          </tr>
+        </thead>
+        {% for song in playlist.song_set.all %}
+          <tr>
+            <td>{{ song.position }}</td>
+            <td>{{ song.name }}</td>
+            <td>{{ song.artist }}</td>
+            <td>{{ song.album }}</td>
+            <!-- <td>{{ song.slug }}</td> -->
+           <!--  <td>{{ song.song_id }}</td> -->
+            </tr>
+           {% endfor %}
+          </table>
+        </div>
+      </div>
+  
 <!--     <a class="btn btn-primary" href="{% url 'playlists:load' %}">Load playlists</a> -->
     <!-- Your Stuff: Custom user template urls -->
   </div>
 
 </div>
+</div>
+<div class="container">
+  <div class="row">
+    
+    </div>
+  </div>
 <!-- End Action buttons -->
 {% endif %}
 

@@ -3,7 +3,6 @@ from __future__ import absolute_import, unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
-from django.http import HttpResponseRedirect
 
 from braces.views import LoginRequiredMixin
 
@@ -31,16 +30,16 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
     # These next two lines tell the view to index lookups by username
 
     def get_success_url(self):
-
+        playlist = Playlist.objects.get(id=self.kwargs['id']).first()
         return reverse("playlists:detail",
-                       kwargs={"slug": self.request.playlist})
+                       kwargs={"slug": playlist.slug})
 
     def get_owner(self):
         # Only get the User record for the user making the request
         return User.objects.get(username=self.request.user.username)
 
     def get_object(self):
-        return Playlist.objects.get(playlistname=self.request.playlist.name,
+        return Playlist.objects.get(id=self.kwargs['id'],
                                     owner=self.get_owner)
 
 

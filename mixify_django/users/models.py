@@ -59,14 +59,6 @@ class User(AbstractUser):
         social_account = self.spotify_account
         return str(social_account.uid)
 
-    # def _safe_spotify_object(self):
-    #     access_token = SocialToken.objects.filter(account__user=self,
-    #                                               account__provider='spotify')
-    #     logger.debug(access_token)
-    #     print(access_token)
-    #     spotify = spotipy.Spotify(auth=access_token)
-    #     return spotify
-
     def load_playlists(self):
         # spotify = self.spotify_object
         spotify = self.spotify_object

@@ -17,6 +17,9 @@
     {% block css %}
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/css/bootstrap.css">
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}"
+      rel="stylesheet" media="screen">
+
 
     <!-- Your stuff: Third-party css libraries go here -->
 
@@ -33,38 +36,37 @@
   <body>
     
     <div class="m-b">
-      <nav class="navbar navbar-dark navbar-static-top bg-inverse">
-        <div class="container">
+      <nav class="navbar navbar-dark bg-inverse">
+        <div class="container-fluid">
          <a class="navbar-brand" href="/">mixify</a>
           <button type="button" class="navbar-toggler hidden-sm-up pull-right" data-toggle="collapse" data-target="#bs-navbar-collapse-1">
             &#9776;
           </button>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a whref="{% url 'about' %}">About</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Playlist</a>
+              <ul class="dropdown-menu">
+                <li><a href="{% url 'playlists:list' %}">List</a></li>
 
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-toggleable-xs" id="bs-navbar-collapse-1">
-            <nav class="nav navbar-nav">
-              <a class="nav-link nav-item" href="{% url 'home' %}">Home</a>
-              <a class="nav-link nav-item" href="{% url 'about' %}">About</a>
-              <li class="dropdown nav-item nav-link">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Playlists<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="{% url 'playlists:list' %}">List</a></li>
-                  <li><a href="{% url 'playlists:list' %}">Load</a></li>
-                </ul>
-              </li>
-            </nav>
-        
-            <nav class="nav navbar-nav pull-right">
+                <li role="separator" class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="#">One more separated link</a></li> -->
+              </ul>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
               {% if request.user.is_authenticated %}
-                <a class="nav-link nav-item" href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a>
-                <a class="nav-link nav-item" href="{% url 'account_logout' %}">{% trans "Logout" %}</a>
+                <li><a href="{% url 'users:detail' request.user.username  %}">{% trans "My Profile" %}</a></li>
+                <li><a href="{% url 'account_logout' %}">{% trans "Logout" %}</a></li>
               {% else %}
-                <a class="nav-link nav-item" href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a>
-                <a class="nav-link nav-item" href="{% url 'account_login' %}">{% trans "Log In" %}</a>
+                <li><a href="{% url 'account_signup' %}">{% trans "Sign Up" %}</a></li>
+                <li><a href="{% url 'account_login' %}">{% trans "Log In" %}</a></li>
               {% endif %}
-            </nav>
           </div>
-        </div>
       </nav>
     </div>
 
@@ -90,9 +92,10 @@
     {% block javascript %}
       <!-- Latest JQuery -->
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
       <!-- Latest compiled and minified JavaScript -->
-      <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script>
+<!--       // <script src="https://cdn.rawgit.com/twbs/bootstrap/v4-dev/dist/js/bootstrap.js"></script> -->
+
 
       <!-- Your stuff: Third-party javascript libraries go here -->
 

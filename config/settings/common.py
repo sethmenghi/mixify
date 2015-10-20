@@ -28,7 +28,7 @@ DJANGO_APPS = (
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'bootstrap3',
     # Useful template tags:
     # 'django.contrib.humanize',
 
