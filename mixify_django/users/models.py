@@ -9,7 +9,6 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from allauth.socialaccount.models import SocialToken, SocialAccount
 
-from spotipy import util
 import spotipy
 
 from ..playlists.models import Playlist
@@ -64,18 +63,17 @@ class User(AbstractUser):
         spotify = self.spotify_object
         playlists = spotify.user_playlists(self.spotify_uid)
         for playlist in playlists['items']:
-            print(playlist['id'], playlist['name'])
-            if 'Radio' not in playlist['name']:
-                self.load_playlist(playlist, spotify=spotify)
+            self.load_playlist(playlist, spotify=spotify)
 
     def load_playlist(self, playlist, spotify=None):
-        print(playlist['owner'])
-        owner_id = playlist['owner']['id']
+        owner_id = playlist['owner']['id']  # only load owned playlists
         if owner_id == self.spotify_uid:
             if not spotify:
                 spotify = self.spotify_object
-            playlist_id = playlist['id']
-            name = playlist['name']
-            playlist = Playlist(playlist_id=playlist_id, name=name, owner=self)
-            playlist.save()
-            playlist.load_songs(spotify=spotify)
+            playlist_obj = Playlist.objects.filter(playlist_id=playlist['id']).first()
+            if playlist_obj:  # playlist already exists
+                playlist_obj.reload_songs(spotify=spotify)
+            else:
+                playlist_obj = Playlist(playlist_id=playlist['id'], name=playlist['name'], owner=self)
+                playlist_obj.save()
+                playlist_obj.load_songs(spotify=spotify)

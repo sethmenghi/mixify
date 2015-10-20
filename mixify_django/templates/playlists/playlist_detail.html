@@ -4,24 +4,19 @@
 {% block title %}Playlist: {{ object.name }}{% endblock %}
 
 {% block css %}
+  {{ block.super }}
   <link href="{% static 'css/playlist_detail.css' %}" rel="stylesheet">
+  }
 {% endblock %}
 
 {% block content %}
 <div class="container">
 
   <div class="row">
-    <div class="col-md-4">
-
-      <h2>{{ playlist.name }}</h2>
-      <hr>
-      <!-- {% if playlist.name %} -->
-        <p>id: {{ object.playlist_id }}</p>
-        <p>owner: {{ object.owner.spotify_uid }}</p>
-        <p>slug: {{ object.slug }}</p>
-      <!--       {% endif %} -->
+    <div class="col-md-12">
+      <h2>{{ playlist.name }} <small> {{ playlist.owner.spotify_uid }}</h2>
       {% load account %}
-    <a class="btn btn-primary" href="{% url 'playlists:update' %}">Update</a>
+    <hr>
     </div>
   </div>
 
@@ -30,9 +25,22 @@
 <div class="row">
     <div class="col-md-12">
       <div class="panel panel-default">
-       <div class="panel-heading">Songs</div>
+       <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-10">
+            <h4>Songs</h4>
+            </div>
+            <div class="col-md-2">
+              <a class="btn btn-default btn-sm" href="{% url 'playlists:update' %}">Update</a>
+            </div>
+          </div>
+        </div>
 <!--         <div class="panel-body">
-          <p>...</p>
+          <div class="row">
+            <div class="col-sm-6">
+              <p>playlist_id: {{ object.playlist_id }}</p>
+            </div>
+          </div>
         </div> -->
         <table class="table">
         <thead>
@@ -43,9 +51,9 @@
             <td>Album</td>
           </tr>
         </thead>
-        {% for song in playlist.song_set.all %}
+        {% for song in playlist.local_songs %}
           <tr>
-            <td>{{ song.position }}</td>
+            <td>{{ forloop.counter }}</td>
             <td>{{ song.name }}</td>
             <td>{{ song.artist }}</td>
             <td>{{ song.album }}</td>

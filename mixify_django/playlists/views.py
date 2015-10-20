@@ -8,7 +8,15 @@ from braces.views import LoginRequiredMixin
 
 # from .models import Playlist
 from ..users.models import User
-from .models import Playlist, Song
+from .models import Playlist
+
+
+class PlaylistListView(LoginRequiredMixin, ListView):
+    model = Playlist
+
+    # These next two lines tell the view to index lookups by username
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
 
 
 class PlaylistDetailView(LoginRequiredMixin, DetailView):
@@ -40,15 +48,7 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
 
     def get_object(self):
         return Playlist.objects.get(id=self.kwargs['id'],
-                                    owner=self.get_owner)
-
-
-class PlaylistListView(LoginRequiredMixin, ListView):
-    model = Playlist
-
-    # These next two lines tell the view to index lookups by username
-    slug_field = "slug"
-    slug_url_kwarg = "slug"
+                                    owner=self.get_owner())
 
 
 def load_playlists(request):
