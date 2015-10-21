@@ -11,7 +11,7 @@
     <hr>
     <div class="list-group">
         {% for playlist in playlist_list %}
-            {% if playlist.owner == request.user %}
+            {% if playlist.owner == request.user%}
                 <a href="{% url 'playlists:detail' playlist.slug %}" class="list-group-item">
                 <h4 class="list-group-item-heading">{{ playlist.name }}</h4>
                 <p>{{ playlist.songs.count }} Songs</p>

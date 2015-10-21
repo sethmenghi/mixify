@@ -8,12 +8,13 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 
-from mixify_django import users
+# from mixify_django import users
 
 
 logger = logging.getLogger(__name__)
 
 
+@python_2_unicode_compatible
 class Song(models.Model):
 
     song_id = models.CharField(_("SongID"), unique=True, blank=False, max_length=255)
@@ -104,7 +105,7 @@ class Playlist(models.Model):
         else:
             return False
 
-    def get_songs_from_spotify(self, username=None, spotify=None):
+    def get_tracks_from_spotify(self, username=None, spotify=None):
         """Yield all tracks in the playlists id."""
         if not spotify:
             spotify = self.spotify_object
@@ -122,15 +123,15 @@ class Playlist(models.Model):
         """Load songs into a new playlist."""
         if not spotify:
             spotify = self.spotify_object
-        songs_positioned = enumerate(self.get_songs_from_spotify(spotify=spotify))
-        for i, song in songs_positioned:
-            logger.debug(i, song['id'], song['name'], song['album'])
-            if song['id']:
-                artist = song['artists'][0]['name']
-                song_obj = Song.objects.filter(song_id=song['id']).first()
+        tracks_positioned = enumerate(self.get_tracks_from_spotify(spotify=spotify))
+        for i, track in tracks_positioned:
+            logger.debug(i, track['id'], track['name'], track['album'])
+            if track['id']:
+                song_obj = Song.objects.filter(song_id=track['id']).first()
                 if not song_obj:  # Song is new to the database
-                    song_obj = Song(song_id=song['id'], name=song['name'], artist=artist,
-                                    album=song['album']['name'])
+                    song_obj = Song(song_id=track['id'], name=track['name'],
+                                    artist=track['artists'][0]['name'],
+                                    album=track['album']['name'])
                     song_obj.save()
                 self.save_to_playlist(song_obj, i)
 
@@ -138,19 +139,20 @@ class Playlist(models.Model):
         """Completely reload playlist from spotify."""
         if not spotify:
             spotify = self.spotify_object
-        songs_positioned = enumerate(self.get_songs_from_spotify(spotify=spotify))
-        for i, song in songs_positioned:
-            if song['id']:  # make sure song isn't a local file
-                song_obj = Song.objects.filter(song_id=song['id']).first()
-                playlist_song = PlaylistSong.objects.filter(playlist=self, song=song).first()
+        tracks_positioned = enumerate(self.get_tracks_from_spotify(spotify=spotify))
+        for i, track in tracks_positioned:
+            if track['id']:  # make sure song isn't a local file
+                song_obj = Song.objects.filter(song_id=track['id']).first()
+                playlist_song = PlaylistSong.objects.filter(song__song_id=track['id'],
+                                                            playlist=self).first()
                 if song_obj and playlist_song:  # song exists in db  and song already in playlist
                     playlist_song.position = i
                 elif song_obj:
                     self.save_to_playlist(song_obj, i)
                 else:
-                    song_obj = Song(song_id=song['id'], name=song['name'],
-                                    artist=song['artists'][0]['name'],
-                                    album=song['album']['name'])
+                    song_obj = Song(song_id=track['id'], name=track['name'],
+                                    artist=track['artists'][0]['name'],
+                                    album=track['album']['name'])
                     song_obj.save()
                     self.save_to_playlist(song_obj, i)
 
@@ -162,6 +164,7 @@ class Playlist(models.Model):
         spotify.user_playlist_add_tracks(user, self.playlist_id, song, position)
 
 
+@python_2_unicode_compatible
 class PlaylistSong(models.Model):
     """Need an intermediate table to support position in the playlist."""
     playlist = models.ForeignKey('playlists.Playlist')
@@ -170,3 +173,6 @@ class PlaylistSong(models.Model):
 
     class Meta:
         ordering = ['position']
+
+    def __str__(self):
+        return self.playlist.name.decode('utf-8') + ': ' + self.song.song_id

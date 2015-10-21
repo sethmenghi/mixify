@@ -3,12 +3,20 @@ from __future__ import absolute_import, unicode_literals
 
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView, ListView, RedirectView, UpdateView
+from django.shortcuts import redirect
 
 from braces.views import LoginRequiredMixin
 
 # from .models import Playlist
 from ..users.models import User
 from .models import Playlist
+
+
+class PlaylistListAllView(LoginRequiredMixin, ListView):
+    model = Playlist
+    template_name = 'playlists/playlist_all.html'
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
 
 
 class PlaylistListView(LoginRequiredMixin, ListView):
@@ -53,4 +61,4 @@ class PlaylistUpdateView(LoginRequiredMixin, UpdateView):
 
 def load_playlists(request):
     request.user.load_playlists()
-    return reverse("users:list")
+    return redirect("playlists:list")
