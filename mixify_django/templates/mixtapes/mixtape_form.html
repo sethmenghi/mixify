@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% load url from future %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Create" %}{% endblock title %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-5">
+      <h1>{% trans "New Mixtape" %}</h1>
+      <form class="signup" id="signup_form" method="post" action="{% url 'mixtapes:list' %}">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+        {% endif %}
+        <button class="btn btn-primary" type="submit">{% trans "Create" %} &raquo;</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
+
+
+

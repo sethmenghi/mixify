@@ -8,7 +8,7 @@ from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import slugify
 
-from ..playlists import Song
+from ..playlists.models import Song
 
 
 @python_2_unicode_compatible
@@ -20,6 +20,9 @@ class Mixtape(models.Model):
     songs = models.ManyToManyField(Song, through='MixtapeSong')
     provider_id = models.CharField(_("ID given by provider"), blank=True, max_length=255)
 
+    def __str__(self):
+        return self.name
+
     @property
     def local_songs(self):
         """Return all songs in database."""
@@ -29,6 +32,13 @@ class Mixtape(models.Model):
     @property
     def length(self):
         return Song.objects.filter(mixtape__provider_id=self.provider_id).count
+
+    def init_spotify(self):
+        """Create playlist on spotify as name."""
+        spotify = self.owner.spotify_object()
+        if self.provider_id is None:
+            playlist = spotify.user_playlist_create(self.owner.spotify_uid, self.name)
+            self.provider_id = playlist['id']
 
     def save_song(self, song, position):
         mixtapesong = MixtapeSong(mixtape=self, song=song, position=position)
@@ -49,13 +59,13 @@ class Mixtape(models.Model):
         """NEEDS BETTER ALGORITHM."""
         spotify = self.owner.spotify_object()
         for song in self.local_songs:
-            spotify.remove_all_occurrences_of_tracks(self.owner.spotify_uid, song.song_id)
+            spotify.user_playlist_remove_all_occurrences_of_tracks(self.owner.spotify_uid,
+                                                                   self.provider_id, song.song_id)
         for song in self.local_songs:
             spotify.user_playlist_add_track(self.owner.spotify_uid,
                                             self.provider_id, song.song_id)
 
-    def save(self, *args, **kwargs):
-        """To make sure slug gets saved correctly."""
+    def init_slug(self):
         if not self.id and not self.slug:
             slug = slugify(self.name)
             slug_exists = True
@@ -70,6 +80,11 @@ class Mixtape(models.Model):
                 except Mixtape.DoesNotExist:
                     self.slug = slug
                     break
+
+    def save(self, *args, **kwargs):
+        """To make sure slug gets saved correctly."""
+        self.init_slug()
+        self.init_spotify()
         super(Mixtape, self).save(*args, **kwargs)
 
 
@@ -80,6 +95,9 @@ class MixtapeSong(models.Model):
     song = models.ForeignKey('playlists.Song')
     position = models.IntegerField()
     votes = models.IntegerField(default=1)
+
+    def __str__(self):
+        return self.name
 
     class Meta:
         ordering = ['position']
