@@ -38,4 +38,4 @@ redis>=2.10.0
 
 
 # Your custom requirements go here
-django-bootstrap==3-8.2.3
+django-bootstrap3==8.2.3
