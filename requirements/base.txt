@@ -39,4 +39,4 @@ redis>=2.10.0
 
 # Your custom requirements go here
 django-bootstrap3==8.2.3
-spotipy=2.4.4
+spotipy==2.4.4
