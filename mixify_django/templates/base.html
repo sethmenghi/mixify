@@ -35,7 +35,7 @@
 
   <body>
     <div class="m-b">
-      <nav class="navbar bg-inverse navbar-default">
+      <nav class="navbar navbar-inverse">
         <div class="container-fluid">
           <!-- Header of navbar including brand and dropdown button for mobile -->
           <div class="navbar-header">
@@ -45,7 +45,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-           <a class="navbar-brand" href="/">mixify</a>
+            <a class="navbar-brand" href="/">mixify</a>
           </div>
           <!-- navbar links -->
           <div class="collapse navbar-collapse" id="navbar-collapse-1">
@@ -82,11 +82,10 @@
                   <li><a href="{% url 'account_login' %}">{% trans "Log In" %}</a></li>
                 {% endif %}
             </ul>
-          </div>
-        </div>
+          </div> <!-- end links to other parts -->
+        </div> <!-- .fluid-container -->
       </nav>
-    </div>
-
+    </div> <!-- .m-b -->
     <div class="container">
 
       {% if messages %}
@@ -95,8 +94,10 @@
           {% endfor %}
       {% endif %}
 
+      <!-- Enter content here!!! -->
       {% block content %}
-        <p>Use this document as a way to quick start any new project.</p>
+
+
       {% endblock content %}
 
     </div> <!-- /container -->
